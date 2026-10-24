@@ -15,6 +15,8 @@ class UFlowGraph;
 class UFlowNodeBase;
 class UFlowNode;
 class UFlowAsset;
+class UToolMenu;
+DECLARE_MULTICAST_DELEGATE_TwoParams(FFlowAssetSourceMenuExtension, UToolMenu*, UFlowAsset*);
 class FFlowMessageLog;
 
 DECLARE_DELEGATE(FFlowGraphNodeEvent);
@@ -42,6 +44,8 @@ protected:
 	static bool bFlowAssetsLoaded;
 
 public:
+	// Project integrations append whole-asset source tools without a reverse dependency.
+	static FFlowAssetSourceMenuExtension OnBuildAssetSourceMenu;
 	/* It would be intuitive to assign a custom Graph Node class in Flow Node class.
 	 * However, we shouldn't assign class from editor module to runtime module class. */
 	UPROPERTY()

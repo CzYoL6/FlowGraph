@@ -387,6 +387,16 @@ void UFlowAsset::RegisterNode(const FGuid& NewGuid, UFlowNode* NewNode)
 	}
 }
 
+void UFlowAsset::ReplaceNodesForEditorImport(const TArray<UFlowNode*>& NewNodes)
+{
+	Nodes.Reset();
+	for (UFlowNode* Node : NewNodes)
+	{
+		check(Node && Node->GetOuter() == this && Node->GetGuid().IsValid());
+		Nodes.Add(Node->GetGuid(), Node);
+	}
+}
+
 void UFlowAsset::UnregisterNode(const FGuid& NodeGuid)
 {
 	Nodes.Remove(NodeGuid);

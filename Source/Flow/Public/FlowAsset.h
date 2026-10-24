@@ -138,6 +138,10 @@ public:
 	UFlowNode* CreateNode(const UClass* NodeClass, UEdGraphNode* GraphNode);
 
 	void RegisterNode(const FGuid& NewGuid, UFlowNode* NewNode);
+
+	// Source import installs the complete validated node set before rebuilding EdGraph.
+	// RegisterNode harvests immediately and cannot be used while graph nodes are absent.
+	void ReplaceNodesForEditorImport(const TArray<UFlowNode*>& NewNodes);
 	void UnregisterNode(const FGuid& NodeGuid);
 
 	/* Processes nodes and updates pin connections from the graph to the UFlowNode (processes all nodes in the graph if passed nullptr). */

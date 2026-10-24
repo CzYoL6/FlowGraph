@@ -1339,7 +1339,7 @@ void UFlowGraphSchema::GetCommentAction(FGraphActionMenuBuilder& ActionMenuBuild
 
 bool UFlowGraphSchema::IsFlowNodeOrAddOnPlaceable(const UClass* Class)
 {
-	if (Class == nullptr || Class->HasAnyClassFlags(CLASS_Abstract | CLASS_NotPlaceable | CLASS_Deprecated))
+	if (Class == nullptr || Class->HasAnyClassFlags(CLASS_Abstract | CLASS_NotPlaceable | CLASS_Deprecated | CLASS_NewerVersionExists))
 	{
 		return false;
 	}
@@ -1377,11 +1377,9 @@ void UFlowGraphSchema::OnHotReload(EReloadCompleteReason ReloadCompleteReason)
 
 void UFlowGraphSchema::GatherNativeNodesOrAddOns(const TSubclassOf<UFlowNodeBase>& FlowNodeBaseClass, TArray<UClass*>& InOutNodesOrAddOnsArray)
 {
-	// collect C++ Nodes or AddOns once per editor session
-	if (InOutNodesOrAddOnsArray.Num() > 0)
-	{
-		return;
-	}
+	// Loaded non-Blueprint script classes may be replaced after a hot reload.
+	// Rebuild this small editor-only list without depending on a particular scripting plugin.
+	InOutNodesOrAddOnsArray.Reset();
 
 	TArray<UClass*> FlowNodesOrAddOns;
 	GetDerivedClasses(FlowNodeBaseClass, FlowNodesOrAddOns);
@@ -1443,6 +1441,12 @@ void UFlowGraphSchema::GatherNodes()
 	}
 
 	UpdateGeneratedDisplayNames();
+}
+
+void UFlowGraphSchema::RefreshLoadedNodeClasses()
+{
+	GatherNodes();
+	OnNodeListChanged.Broadcast();
 }
 
 void UFlowGraphSchema::OnAssetAdded(const FAssetData& AssetData)

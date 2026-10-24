@@ -126,6 +126,12 @@ void UFlowGraph::RecursivelyRefreshAddOns(UFlowGraphNode& FromFlowGraphNode)
 
 void UFlowGraph::NotifyGraphChanged()
 {
+	// During paste/import, runtime nodes may exist before their graph widgets.
+	// Harvest only after the complete graph is restored, once UnlockUpdates runs.
+	if (IsLocked())
+	{
+		return;
+	}
 	if (UFlowAsset* FlowAsset = GetFlowAsset())
 	{
 		FlowAsset->HarvestNodeConnections();
@@ -511,6 +517,7 @@ void UFlowGraph::UnlockUpdates()
 
 	// Existing behavior
 	UpdateAsset();
+	NotifyGraphChanged();
 }
 
 void UFlowGraph::EnqueueRerouteTypeFixup(UFlowGraphNode_Reroute* RerouteNode)

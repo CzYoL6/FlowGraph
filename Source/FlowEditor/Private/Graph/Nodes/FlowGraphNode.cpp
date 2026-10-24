@@ -38,6 +38,8 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(FlowGraphNode)
 
+FFlowAssetSourceMenuExtension UFlowGraphNode::OnBuildAssetSourceMenu;
+
 #define LOCTEXT_NAMESPACE "FlowGraphNode"
 
 UFlowGraphNode::UFlowGraphNode(const FObjectInitializer& ObjectInitializer)
@@ -477,6 +479,7 @@ void UFlowGraphNode::ReconstructSinglePin(UEdGraphPin* NewPin, UEdGraphPin* OldP
 
 void UFlowGraphNode::GetNodeContextMenuActions(class UToolMenu* Menu, class UGraphNodeContextMenuContext* Context) const
 {
+	OnBuildAssetSourceMenu.Broadcast(Menu, Cast<UFlowAsset>(GetGraph()->GetOuter()));
 	const FGenericCommands& GenericCommands = FGenericCommands::Get();
 	const FGraphEditorCommandsImpl& GraphCommands = FGraphEditorCommands::Get();
 	const FFlowGraphCommands& FlowGraphCommands = FFlowGraphCommands::Get();

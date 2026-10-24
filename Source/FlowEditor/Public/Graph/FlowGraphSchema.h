@@ -38,6 +38,8 @@ private:
 	static bool bBlueprintCompilationPending;
 
 public:
+	// For external class generators after reload; no dependency on their implementation.
+	static void RefreshLoadedNodeClasses();
 	static void SubscribeToAssetChanges();
 	static void GetPaletteActions(FGraphActionMenuBuilder& ActionMenuBuilder, const UFlowAsset* EditedFlowAsset, const FString& CategoryName);
 
